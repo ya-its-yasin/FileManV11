@@ -1,0 +1,58 @@
+<web-app>
+	<display-name>FileMan v11</display-name>
+
+	<servlet>
+		<servlet-name>LoginModule</servlet-name>
+		<servlet-class>LoginModule</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LoginModule</servlet-name>
+		<url-pattern>/LoginModule</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>AdminHome</servlet-name>
+		<servlet-class>AdminHome</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AdminHome</servlet-name>
+		<url-pattern>/AdminHome</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>AdminAddLoc</servlet-name>
+		<servlet-class>AdminAddLoc</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AdminAddLoc</servlet-name>
+		<url-pattern>/AdminAddLoc</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>UserDisplay</servlet-name>
+		<servlet-class>UserDisplay</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>UserDisplay</servlet-name>
+		<url-pattern>/UserDisplay</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>UserUpload</servlet-name>
+		<servlet-class>UserUpload</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>UserUpload</servlet-name>
+		<url-pattern>/UserUpload</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>UserDownload</servlet-name>
+		<servlet-class>UserDownload</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>UserDownload</servlet-name>
+		<url-pattern>/UserDownload</url-pattern>
+	</servlet-mapping>
+
+</web-app>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+
+<head>
+	<title>Admin Home Page</title>
+</head>
+	
+
+<body>
+	<div style="display: flex;">
+	<div style="flex: 50%; margin-top:10%">
+	<form id="add_user_form">
+		<table align=center cellpadding = "5" border="1px">
+				<tr>
+					<th></th>
+					<th> Add User </th>
+				</tr>
+				<tr>
+					<td>Username</td>
+					<td><input type="text"  name="username" id="username" maxlength="30" required></td>
+				</tr>
+				<tr>
+					<td>Password</td>
+					<td><input type="password"  name="password" id="password" maxlength="30" required></td>
+				</tr>
+				
+				<tr>
+					<td></td>
+					<td>
+					<input type="submit" class="button" name="submit" value="Insert User" /></td>
+				</tr>
+		</table>
+	</form>	
+
+	<br><br>
+
+	<table id="user_disp_table" class="display" align='center' cellpadding="5" border="1px">
+	 	<tr>
+			<th>User Name</th>
+			<th>Password</th>
+			<th>Delete</th>
+		</tr>
+		<tbody id='tdata1'>
+		</tbody>
+	</table>
+	</div>
+
+	<div style="flex: 50%; margin-top:10%">
+	<form id="add_loc_form" >
+		<table align=center cellpadding = "5" border="1px">
+			<thead>
+				<tr>
+					<th></th>
+					<th > Add Location </th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>IP Address</td>
+					<td><input type="text" name="ipAddress" maxlength="30" required></td>
+				</tr>
+				<tr>
+					<td>Port</td>
+					<td><input type="text" name="port" maxlength="10" required></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input type="submit" class="button" name="submit" value="Add" /></td>
+				</tr>
+			</tbody>				
+		</table>
+	</form>	
+
+	<br><br>
+
+	<table id="loc_disp_table" class="display" align='center' cellpadding="5" border="1px">
+	 	<tr>
+			<th>IP Address</th>
+			<th>Port</th>
+			<th>Delete</th>
+		</tr>
+		<tbody id='tdata2'>
+		</tbody>
+	</table>
+	</div>
+	</div>
+
+
+<script>
+	var add_user_form = document.getElementById("add_user_form");
+	add_user_form.addEventListener("submit",function(event1){
+		event1.preventDefault();
+        var add_http = new XMLHttpRequest();
+        add_http.onreadystatechange = function() 
+        {
+            if (this.readyState == 4 && this.status == 200) 
+            {	  
+            	add_user_form.reset();
+				window.alert(this.responseText);
+				refresh();
+            }
+        };
+		var param1=new URLSearchParams(new FormData(add_user_form)).toString();
+        add_http.open("POST", "AdminHome",true);
+		add_http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        add_http.send(param1);		
+	});
+
+	var add_loc_form = document.getElementById("add_loc_form");
+	add_loc_form.addEventListener("submit",function(event1){
+		event1.preventDefault();
+        var add_http = new XMLHttpRequest();
+        add_http.onreadystatechange = function() 
+        {
+            if (this.readyState == 4 && this.status == 200) 
+            {
+				add_loc_form.reset();
+				window.alert(this.responseText);
+				refresh();
+            }
+        };
+		var param1=new URLSearchParams(new FormData(add_loc_form)).toString();
+        add_http.open("POST", "AdminAddLoc",true);
+		add_http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        add_http.send(param1);		
+	});
+
+	function refresh()
+	{
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) 
+            {
+            	var data = JSON.parse(this.responseText);
+            	var table1 = document.getElementById('tdata1');
+            	while (table1.hasChildNodes()) 
+            	{
+            		  table1.removeChild(table1.lastChild);
+            	}
+        		for (var i = 0; i < data.length; i++)
+        		{
+        			var userName = data[i].userName;
+        			var password =data[i].password;
+        			var row = "<tr> <td>"
+        						+userName
+        						+"</td> <td>"
+        						+password
+        						+"</td><td>"
+        						+"<button type='button' onclick=\"deleteIt1('"+userName+"');\">Delete</button>"
+        						+"</td></tr>";  
+
+        			table1.innerHTML += row;
+				}
+            }
+        };
+        xmlhttp.open("GET", "AdminHome", true);
+        xmlhttp.send();		
+
+        var xmlhttp2 = new XMLHttpRequest();
+        xmlhttp2.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) 
+            {
+            	var data2 = JSON.parse(this.responseText);
+            	var table2 = document.getElementById('tdata2');
+            	while (table2.hasChildNodes()) 
+            	{
+            		table2.removeChild(table2.lastChild);
+            	}
+        		for (var i = 0; i < data2.length; i++)
+        		{
+        			var si_no = data2[i].si_no;
+        			var ipAddress = data2[i].ipAddress;
+        			var port = data2[i].port;
+        			
+        			var row2 = "<tr> <td>"
+        						+ipAddress
+        						+"</td> <td>"
+        						+port
+        						+"</td> <td>"
+        						+"<button type='button' onclick=\"deleteIt2('"+si_no+"');\">Delete</button>"
+        						+"</td></tr>";  
+
+        			table2.innerHTML += row2;
+				}
+            }
+        };
+        xmlhttp2.open("GET", "AdminAddLoc", true);
+        xmlhttp2.send();		
+	}
+	refresh();
+
+	function deleteIt1(str)
+	{
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() 
+        {
+            if (this.readyState == 4 && this.status == 200)
+            {
+				refresh();	            	
+            }
+        };
+        xmlhttp.open("DELETE", "AdminHome?userName="+str, true);
+        xmlhttp.send();		
+	}
+
+	function deleteIt2(str)
+	{
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() 
+        {
+            if (this.readyState == 4 && this.status == 200) 
+            {
+				refresh();	            	
+            }
+        };
+        xmlhttp.open("DELETE", "AdminAddLoc?si_no="+str, true);
+        xmlhttp.send();		
+	}
+
+</script>
+
+</body>
+</html>

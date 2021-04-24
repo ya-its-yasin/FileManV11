@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+
+<head>
+	<title>User Home Page</title>
+</head>
+	
+
+<body>
+
+    <div style="display: flex;">
+	<div style="flex: 50%; margin-top:10% ">
+	<table id="disptable" class="display" align='center' cellpadding="5" border="1px">
+	 	<tr>
+			<th>File Name</th>
+			<th>Number of peices</th>
+			<th>Download</th>
+			<th>Delete</th>
+		</tr>
+		<tbody id='tdata'>
+		</tbody>
+	</table>
+	</div>
+	
+	<div style="flex: 50%; margin-top:10%">
+	<form id="upload_form" action = "" method = "post" enctype = "multipart/form-data">
+		<input type="text" hidden=true name="action" value="insert">
+		<table align=center cellpadding = "5" border="1px">
+			<tr>
+			<th>.</th>
+				
+				<th> Upload file </th>
+			</tr>
+			<tr>
+				<td>File </td>
+				<td><input type = "file" name = "file-select" id = "file-select" size = "50" onclick="getNum()" required/></td>
+			</tr>
+			<tr>
+				<td>Number of pieces</td>
+				<td><input type = "text" name="pieces" id="pieces" /></td>
+			</tr>
+			<tr>
+				<td>.</td>
+				<td>
+				<input type = "submit" value = "Upload File" /></td>
+			</tr>
+		</table>
+	</form>	
+
+	<form hidden='true' name='download_form' action='UserDownload' method='GET' >
+        <input type = 'text' id='fileName' name = 'fileName' required/>
+        <input type = 'text' id='piecesIn' name = 'piecesIn' required/>
+        <input type = 'text' name = 'act' value='download' hidden = 'true' />
+        <input type='submit' value='Download' />
+    </form>
+
+	</div>
+	</div>
+	
+
+
+<script>
+	var upload_form = document.getElementById("upload_form");
+   	var fileSelect = document.getElementById("file-select");
+   	var pieces = document.getElementById("pieces");
+   	
+   	function refresh()
+	{
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) 
+            {
+            	var data = JSON.parse(this.responseText);
+            	var table = document.getElementById('tdata');
+            	
+            	while (table.hasChildNodes()) {
+            		  table.removeChild(table.lastChild);
+            		}
+            	
+        		for (var i = 0; i < data.length; i++){
+        			var userName = data[i].userName;
+        			var fileName =data[i].fileName;
+        			var pieces1 =data[i].pieces;
+        			
+        			var row = "<tr> <td>"
+        						+fileName
+        						+"</td> <td>"
+        						+pieces1
+        						+"</td><td>"
+        						+"<button type='button' onclick=\"downloadIt2('"+fileName+"','"+pieces1+"');\">Download</button>"
+        						+"</td><td>"
+        						+"<button type='button' onclick=\"deleteIt('"+fileName+"','"+pieces1+"');\">Delete</button>"
+        						+"</td></tr>";	
+        			table.innerHTML += row;
+				}
+        		
+            }
+        };
+        xmlhttp.open("GET", "UserDisplay", true);
+        xmlhttp.send();			
+		
+	}
+	refresh();
+
+	function downloadIt2(fileName,pieces1)
+	{
+		document.getElementById("fileName").value=fileName;
+		document.getElementById("piecesIn").value=pieces1;
+		document.download_form.submit();
+	}
+
+	function deleteIt(fileName,pieces1)
+	{
+		var xmlhttp1 = new XMLHttpRequest();
+        xmlhttp1.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) 
+            {
+            	refresh();
+        		
+            }
+        };
+        xmlhttp1.open("DELETE", "UserUpload?fileName="+fileName+"&piecesIn="+pieces1, true);
+        xmlhttp1.send();
+	}
+
+   	function getNum() 
+   	{
+	  pieces.value = Math.floor((Math.random() * 51) + 5);
+	}
+
+	upload_form.addEventListener("submit",function(event1){
+		 
+		event1.preventDefault();
+	    var files = fileSelect.files;
+	    var formData = new FormData();
+	    var file = files[0];
+	    formData.append('pieces', pieces.value);
+	    formData.append('file-select', file, file.name);
+	    var xhr = new XMLHttpRequest();
+	    	    
+	    xhr.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+				          	
+				refresh();
+				upload_form.reset();
+				window.alert(this.responseText);
+				
+            }
+        };
+        xhr.open("POST", "UserUpload", true);
+	    xhr.send(formData);		
+	});
+
+</script>
+
+</body>
+</html>
